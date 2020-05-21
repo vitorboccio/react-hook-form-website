@@ -57,7 +57,7 @@ export default {
   },
   applyValidation: {
     title: "Apply validation",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>
           React Hook Form makes form validation easy by aligning with the
@@ -146,11 +146,19 @@ export default {
   },
   workWithUI: {
     title: "Work with UI library",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>
           React Hook Form has made it easy to integrate with external UI
-          component libraries.
+          component libraries. You can check out{" "}
+          <a
+            href="https://www.youtube.com/watch?v=0nDGeQKLFjo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            this video tutorial
+          </a>{" "}
+          on how to work with MUI.
         </p>
         <p>
           <b className={typographyStyles.note}>Option 1:</b> The best way is to
@@ -226,6 +234,57 @@ export default {
       <p>
         React Hook Form is built with <code>Typescript</code>, so you can define
         a <code>FormData</code> type to support form values.
+      </p>
+    ),
+  },
+  schema: {
+    title: "Schema Validation",
+    description: (
+      <>
+        <p>
+          React Hook Form supports schema-based form validation with{" "}
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
+          <a
+            href="https://github.com/ianstormtaylor/superstruct"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Superstruct
+          </a>{" "}
+          &{" "}
+          <a
+            href="https://github.com/hapijs/joi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Joi
+          </a>
+          , where you can pass your <code>schema</code> to{" "}
+          <a href="/api#useForm">useForm</a> as an optional config. React Hook
+          Form will validate your input data against the schema and return with
+          either <a href="/api#errors">errors</a> or a valid result.
+        </p>
+      </>
+    ),
+    step1: (
+      <>
+        <p>
+          <b className={typographyStyles.note}>Step 1:</b> Install{" "}
+          <code>Yup</code> into your project.
+        </p>
+      </>
+    ),
+    step2: (
+      <p>
+        <b className={typographyStyles.note}>Step 2:</b> Prepare your schema for
+        validation and register inputs with React Hook Form.
       </p>
     ),
   },

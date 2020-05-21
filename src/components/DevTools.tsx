@@ -86,11 +86,11 @@ export default ({ defaultLang }: { defaultLang: string }) => {
               lightMode ? getStartedStyle.lightInstallCode : ""
             }`}
           >
-            npm install react-hook-form-devtools -D
+            npm install @hookform/devtools -D
             <button
               className={getStartedStyle.copyButton}
               onClick={() => {
-                copyClipBoard("npm install react-hook-form-devtools -D")
+                copyClipBoard("npm install @hookform/devtools -D")
                 alert(generic.copied["en"])
               }}
             >

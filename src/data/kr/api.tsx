@@ -1,7 +1,5 @@
 import * as React from "react"
 import colors from "../../styles/colors"
-import Popup from "../../components/Popup"
-import generic from "../generic"
 import CodeArea from "../../components/CodeArea"
 import useFieldArrayArgument from "../../components/codeExamples/useFieldArrayArgument"
 import typographyStyles from "../../styles/typography.module.css"
@@ -40,8 +38,7 @@ export default {
     validateContext: (
       <>
         <p>
-          이 컨텍스트 객체는 <code>validationResolver</code> 의 두 번째 인자로
-          주입되거나{" "}
+          이 컨텍스트 객체는 <code>resolver</code> 의 두 번째 인자로 주입되거나{" "}
           <a
             href="https://github.com/jquense/yup"
             target="_blank"
@@ -62,8 +59,8 @@ export default {
     validateCriteriaMode: (
       <>
         <p>
-          기본값으로 설정 된 <code>firstErrorDetected</code> 는 모든 필드 유효성
-          검사를 실행하고 처음 발견하는 모든 에러를 모읍니다.
+          기본값으로 설정 된 <code>firstError</code> 는 모든 필드 유효성 검사를
+          실행하고 처음 발견하는 모든 에러를 모읍니다.
         </p>
         <p>
           <code>all</code> 로 설정하면, 모든 필드의 유효성 검사가 실행되면서
@@ -144,7 +141,7 @@ export default {
         <code>Yup</code> 의 스키마 레벨 폼 유효성 검사 규칙을 적용 하세요.{" "}
         <button
           className={buttonStyles.codeAsLink}
-          onClick={() => goToSection("ValidationSchema")}
+          onClick={() => goToSection("validationSchema")}
         >
           validationSchema
         </button>{" "}
@@ -155,7 +152,6 @@ export default {
       <p>
         이 옵션을 사용하여 입력의 재유효성 검사를 언제 할지 설정 할 수 있습니다.
         (기본적으로 입력이 변경될 때 유효성 검사가 트리거 됩니다. )
-        <Popup />
       </p>
     ),
     validationFields: (
@@ -302,6 +298,18 @@ export default {
             동안 커스텀 등록된 입력을 다시 렌더링 하도록 하려면, 등록된 입력의
             타입을 지정해 주어야 합니다.
           </p>
+
+          <p>
+            <code
+              className={typographyStyles.codeBlock}
+            >{`register({ name: 'firstName', type: 'custom' }, { required: true, min: 8 })`}</code>
+          </p>
+
+          <p>
+            <b className={typographyStyles.note}>Nota:</b> multiple radio inputs
+            with the same name, you want to register the validation to the last
+            input so the hook understand validate them as a group at the end.
+          </p>
         </>
       ),
     },
@@ -337,13 +345,16 @@ export default {
             Proxy
           </a>{" "}
           로 감싸져 있습니다. 그러니 상태를 업데이트 하려면 <code>render</code>{" "}
-          전에 읽거나 실행해야 합니다.
+          전에 읽거나 실행해야 합니다. 이 다시 렌더링 기능 생략 기능은 웹
+          플랫폼에만 적용됩니다. React Native에서 <code>Proxy</code>를
+          지원합니다.
         </p>
       </>
     ),
     dirty: "사용자가 어떠한 입력이라도 했다면, true로 설정하십시오.",
     dirtyFields: "고유 한 사용자 수정 필드 세트.",
-    isSubmitted: "사용자가 폼을 제출 한 후 true로 설정하십시오.",
+    isSubmitted:
+      "사용자가 폼을 제출 한 후 true로 설정하십시오. 양식을 제출 한 후 reset 메소드로 호출 될 때까지 해당 상태가 제출 된 상태로 유지됩니다.",
     touched: "상호 작용된 모든 입력의 배열입니다.",
     isSubmitting: (
       <>
@@ -359,41 +370,13 @@ export default {
     description: currentLanguage => (
       <>
         <p>각 입력에 대한 폼 에러 혹은 에러 메시지를 가진 객체입니다.</p>{" "}
-        <p>
-          <b className={typographyStyles.note}>
-            {generic.note[currentLanguage]}:
-          </b>{" "}
-          V3 과 V4 의 차이점:
-        </p>
-        <ul>
-          <li>
-            <p>V4: 중첩된 객체</p>
-            <p>
-              <strong>사용 이유:</strong> 옵셔널 체이닝이 커뮤니티 사이에서 많이
-              알려졌고, 더 나은 타입 지원을 합니다.
-            </p>
-            <p>
-              <code>{`errors?.yourDetail?.firstName;`}</code>
-            </p>
-          </li>
-          <li>
-            <p>V3: 평탄한 객체</p>
-            <p>
-              <strong>사용 이유:</strong> 단순하고 에러에 접근하기 쉽습니다.
-            </p>
-            <p>
-              <code>{`errors['yourDetail.firstName'];`}</code>
-            </p>
-          </li>
-        </ul>
       </>
     ),
     types: (
       <>
         여러 종류의 에러가 하나의 필드에 적용되어야 하는 비밀번호 규칙 같은
         입력의 유효성 검사를 할 때 유용합니다. 이 기능을 활성화하려면,{" "}
-        <code>validateCriteriaMode: 'all'</code> 으로 설정해두는 것을 잊지
-        마세요.
+        <code>criteriaMode 'all'</code> 으로 설정해두는 것을 잊지 마세요.
       </>
     ),
     message: `메시지는 기본적으로 빈 문자열입니다. 하지만 에러 메시지와 함께 유효성 검사를 함께 등록하면, 이 값이 반환됩니다.`,
@@ -443,7 +426,6 @@ export default {
       ),
       multiple: "여러 입력을 확인",
       all: "모든 입력을 확인",
-      nest: "모든 입력을보고 중첩 된 객체를 반환",
     },
   },
   handleSubmit: {
@@ -596,28 +578,11 @@ export default {
           이 함수는 전체 폼 데이터를 반환하는 함수이며, 폼 내 값을 검색하려는
           경우에 유용합니다.
         </p>
-        <ul>
-          <li>
-            <p>
-              기본적으로, <code>getValues()</code>는 폼 데이터를 flat
-              structure로 반환합니다. 예 :{" "}
-              <code>{`{ test: 'data', test1: 'data1'}`}</code>
-            </p>
-          </li>
-          <li>
-            <p>
-              정의된 폼 필드에서 <code>getValues({`{ nest: true }`})</code> 는{" "}
-              <code>name</code> 입력 값에 따라 중첩된 구조의 데이터로
-              반환됩니다. 예 :{" "}
-              <code>{`{ test: [1, 2], test1: { data: '23' } }`}</code>
-            </p>
-          </li>
-        </ul>
       </>
     ),
   },
-  triggerValidation: {
-    title: "triggerValidation",
+  trigger: {
+    title: "trigger",
     description: (
       <>
         <p>폼의 입력/선택 유효성 검사를 수동으로 트리거합니다.</p>
@@ -626,25 +591,6 @@ export default {
           <code>errors</code> 객체가 업데이트됩니다.
         </p>
       </>
-    ),
-  },
-  validationSchema: {
-    title: "validationSchema",
-    description: (
-      <p>
-        외부 스키마와 유효성 검사 규칙을 함께 사용하고 싶을 경우,{" "}
-        <code>useForm</code>의 <code>validationSchema</code>를 옵셔널 인자로
-        적용 할 수 있습니다. React Hook Form의 객체 스키마 유효성 검사에서는{" "}
-        <a
-          className={buttonStyles.links}
-          href="https://github.com/jquense/yup"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Yup
-        </a>{" "}
-        을 지원합니다.
-      </p>
     ),
   },
   Controller: {
@@ -708,11 +654,6 @@ export default {
               <code>defaultValues</code> 을 넣어주어야 할 것입니다.
             </p>
             <p>
-              <b className={typographyStyles.note}>참고: </b> 이 값을 사용하면
-              주어진 키 값은 <code>useForm</code> 의 <code>defaultValues</code>{" "}
-              값보다 우선적으로 적용됩니다.
-            </p>
-            <p>
               <b className={typographyStyles.note}>참고: </b> 만약 폼이 기본값과
               함께 <code>reset</code>을 호출한다면, 인라인 값으로{" "}
               <code>defaultValues</code> 를 제공하는 대신 useForm 단계에서{" "}
@@ -729,7 +670,7 @@ export default {
           </td>
           <td />
           <td>
-            <code>registter</code> 에 따른 유효성 검사 규칙.
+            <code>register</code> 에 따른 유효성 검사 규칙.
           </td>
         </tr>
         <tr>
@@ -767,6 +708,33 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
             이 prop 은 특정한 이벤트 이름을 지정하여 그 이벤트의 변화를 바라볼
             수 있도록 합니다. 예: <code>onChange</code> 이벤트가{" "}
             <code>onTextChange</code> 로 되어있는 경우.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>onFocus</code>
+          </td>
+          <td>
+            <code className={typographyStyles.typeText}>() => void</code>
+          </td>
+          <td></td>
+          <td>
+            <p>
+              유효성 검사 에러가 발생했을 때 이 콜백을 이용하여 특정 인풋으로
+              포커스를 이동시킬 수 있습니다. 이 함수는 포커스만 시킬 수 있다면
+              React 및 React-Native 컴포넌트에 모두 적용됩니다.
+            </p>
+            <p>
+              여기에{" "}
+              <a
+                href="https://codesandbox.io/s/react-hook-form-controller-auto-focus-5tru5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                MUI 를 활용한 예제가 있습니다
+              </a>
+              .
+            </p>
           </td>
         </tr>
         <tr>
@@ -951,22 +919,6 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
       </tbody>
     ),
   },
-  NativeValidation: {
-    title: "Browser built-in validation",
-    description: (
-      <>
-        <p>
-          다음 예제는 브라우저의 유효성 검사를 활용하는 방법입니다.{" "}
-          <code>nativeValidation</code> 을 <code>true</code>로 설정하고, 나머지
-          문법은 표준과 같습니다.
-        </p>
-        <p>
-          <b className={typographyStyles.note}>Note</b>: This feature has been
-          removed in V4 due to low usage, but you can still use it in V3
-        </p>
-      </>
-    ),
-  },
   useFieldArray: {
     title: "useFieldArray",
     description: (
@@ -1010,8 +962,9 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
           </li>
           <li>
             <p>
-              기본값을 설정하거나 입력값을 재설정하기 위해{" "}
-              <code>defaultValue</code>를 설정하십시오.
+              <code>defaultValue</code>를으로 설정하십시오. 기본값을 설정하려는
+              경우 <code>fields[index]</code>
+              입력을 제거하거나 재설정하십시오.
             </p>
           </li>
           <li>
@@ -1044,7 +997,7 @@ React.useEffect(() => {
           </li>
           <li>
             <p>
-              만약 <code>useFormContext</code> 를 사용하는 경우, 배열 인풋을
+              만약 <code>useFieldArray</code> 를 사용하는 경우, 배열 인풋을
               등록할 때 <code>{`ref={register}`}</code> 대신{" "}
               <code>{`ref={register()}`}</code> 형태로 사용하는 것이 중요합니다.
               그래야 <code>register</code> 가 배열의 <code>map</code> 함수
@@ -1164,12 +1117,20 @@ React.useEffect(() => {
       </>
     ),
   },
-  validationResolver: {
-    title: "validationResolver",
+  resolver: {
+    title: "resolver",
     description: (
       <>
         <p>
           이 함수는
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
           <a
             href="https://github.com/hapijs/joi"
             target="_blank"
@@ -1191,30 +1152,74 @@ React.useEffect(() => {
           React Hook Form 과 함께 동작할 수 있도록 지원하려 합니다. 심지어
           유효성 검사를 위해 직접 커스터마이징할 수도 있습니다.
         </p>
+
         <p>
-          <b className={typographyStyles.note}>참고:</b> 반드시{" "}
-          <code>values</code> 와 <code>errors</code> 객체를 모두 포함하여
-          리턴시키세요, 그리고 이 객체들의 기본값은 빈 객체 <code>{`{}`}</code>{" "}
-          가 되어야 합니다.
+          우리는 공식적으로 Yup, Joi 및 Superstruct를{" "}
+          <a
+            href="https://github.com/react-hook-form/react-hook-form-resolvers"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            표준 리졸버
+          </a>
+          .
         </p>
-        <p>
-          <b className={typographyStyles.note}>참고:</b> errors 객체의 키 값은
-          반드시 인풋 값과 연결되어야 합니다.
-        </p>
-        <p>
-          <b className={typographyStyles.note}>참고:</b>이 함수는
-          <code>validationSchema</code>와 유사한 사용자 정의 후크 내부에
-          캐시되며, <code>validationContext</code>는 다시 렌더링 할 때마다
-          변경할 수있는 변경 가능한 객체입니다.
-        </p>
-        // todo: Dohyung please translate
-        <p>
-          <b className={typographyStyles.note}>Note:</b> re-validate input will
-          only occur one field at time during user’s interaction, because the
-          lib itself will evaluate the error object to the specific field and
-          trigger re-render accordingly.
-        </p>
+
+        <code
+          style={{
+            fontSize: 16,
+            padding: 15,
+            background: "#191d3a",
+            borderRadius: 4,
+            display: "block",
+          }}
+        >
+          npm install @hookform/resolvers
+        </code>
+
+        <p>사용자 정의 리졸버 빌드에 대한 참고 사항 :</p>
+
+        <ul>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>참고:</b> 반드시{" "}
+              <code>values</code> 와 <code>errors</code> 객체를 모두 포함하여
+              리턴시키세요, 그리고 이 객체들의 기본값은 빈 객체{" "}
+              <code>{`{}`}</code> 가 되어야 합니다.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>참고:</b> errors 객체의 키
+              값은 반드시 인풋 값과 연결되어야 합니다.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>참고:</b>이 기능은
+              <code>context</code>는 다시 렌더링 할 때마다 변경할 수있는 변경
+              가능한 객체.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>참고:</b> 입력값을 다시
+              검사하는 것은 사용자의 행동에 따라 한 필드당 하나씩만 동작합니다.
+              왜냐하면 라이브러리 자체에서 에러 객체의 특정 필드를 대조해보고
+              그에 따라 리랜더링을 실행하기 때문입니다.
+            </p>
+          </li>
+        </ul>
       </>
+    ),
+  },
+  useWatch: {
+    title: "useWatch",
+    description: (
+      <p>
+        그러나 <code> watch </code> API와 동일한 기능을 공유하십시오. 컴포넌트
+        레벨에서 다시 렌더링을 분리하여 결과적으로 애플리케이션 성능 향상.
+      </p>
     ),
   },
 }

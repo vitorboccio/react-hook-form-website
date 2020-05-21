@@ -1,9 +1,10 @@
 import * as React from "react"
-import { CodeSandBoxLink } from "./CodeArea"
+import CodeArea, { CodeSandBoxLink } from "./CodeArea"
 import generic from "../data/generic"
 import typographyStyles from "../styles/typography.module.css"
 import tableStyles from "../styles/table.module.css"
 import buttonStyles from "../styles/button.module.css"
+import formState from "./codeExamples/formState"
 
 const goToSection = (name, sectionsRef) => {
   const url = window.location.href
@@ -54,7 +55,7 @@ export default React.memo(
               </tr>
               <tr>
                 <td>
-                  <code>dirty</code>
+                  <code>isDirty</code>
                 </td>
                 <td>
                   <code className={typographyStyles.typeText}>boolean</code>
@@ -66,18 +67,9 @@ export default React.memo(
                   <code>dirtyFields</code>
                 </td>
                 <td>
-                  <code className={typographyStyles.typeText}>Set</code>
+                  <code className={typographyStyles.typeText}>object</code>
                 </td>
                 <td>{api.formState.dirtyFields}</td>
-              </tr>
-              <tr>
-                <td>
-                  <code>isSubmitted</code>
-                </td>
-                <td>
-                  <code className={typographyStyles.typeText}>boolean</code>
-                </td>
-                <td>{api.formState.isSubmitted}</td>
               </tr>
               <tr>
                 <td>
@@ -87,6 +79,28 @@ export default React.memo(
                   <code className={typographyStyles.typeText}>object</code>
                 </td>
                 <td>{api.formState.touched}</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>isSubmitted</code>
+                </td>
+                <td>
+                  <code className={typographyStyles.typeText}>boolean</code>
+                </td>
+                <td>
+                  {api.formState.isSubmitted}
+                  <div>
+                    <CodeSandBoxLink
+                      style={{
+                        position: "relative",
+                        left: 0,
+                        float: "right",
+                        display: "flex",
+                      }}
+                      url="https://codesandbox.io/s/react-hook-form-reset-issubmitted-state-after-form-submitted-zck8b"
+                    />
+                  </div>
+                </td>
               </tr>
               <tr>
                 <td>
@@ -129,19 +143,12 @@ export default React.memo(
                   </p>
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <CodeSandBoxLink
-                    style={{
-                      position: "relative",
-                      left: 0,
-                    }}
-                    url="https://codesandbox.io/s/7o2wrp86k6"
-                  />
-                </td>
-              </tr>
             </tbody>
           </table>
+          <CodeArea
+            url="https://codesandbox.io/s/react-hook-form-v6-formstate-dirty-touched-submitted-prvpy"
+            rawData={formState}
+          />
         </div>
       </>
     )

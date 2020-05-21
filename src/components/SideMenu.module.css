@@ -29,7 +29,7 @@
 
   .menu > div > ul {
     margin-top: 0;
-    max-width: 260px;
+    max-width: 230px;
     padding: 0;
     overflow-y: auto;
     height: calc(100vh - 236px);
@@ -98,13 +98,19 @@
 .code {
   color: var(--color-light-pink);
   position: relative;
-  font-size: 14px;
-  top: -2px;
+  font-size: 12px;
+  top: 2px;
+  display: inline-table;
 }
 
 @media (min-width: 1024px) {
   .menu {
     margin-top: -65px;
+  }
+
+  .menu > div > ul {
+    margin-top: 0;
+    max-width: 260px;
   }
 
   .menu > ul {

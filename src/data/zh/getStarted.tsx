@@ -53,7 +53,7 @@ export default {
   },
   applyValidation: {
     title: "应用验证",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>
           React Hook Form 通过与现有的
@@ -132,7 +132,7 @@ export default {
   },
   workWithUI: {
     title: "使用UI库",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>React Hook Form 让外部UI组件库集成变得简单。</p>
         <p>
@@ -192,5 +192,57 @@ export default {
   errors: {
     title: "处理错误",
     description: <>React Hook Form提供了一个错误对象，用于显示表单中的错误。</>,
+  },
+  schema: {
+    title: "架构验证",
+    description: (
+      <>
+        <p>
+          React Hook Form支持使用
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
+          <a
+            href="https://github.com/ianstormtaylor/superstruct"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Superstruct
+          </a>{" "}
+          &{" "}
+          <a
+            href="https://github.com/hapijs/joi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Joi
+          </a>
+          进行基于模式的表单验证，您可以在<a href="/api#useForm">useForm</a>
+          其中通过
+          <code>validationSchema</code>将表单用作可选配置。 React Hook
+          Form将根据模式验证您的输入数据，并返回<a href="/api#errors">错误</a>
+          或有效结果。
+        </p>
+      </>
+    ),
+    step1: (
+      <>
+        <p>
+          <b className={typographyStyles.note}>步骤1:</b> 将<code>Yup</code>
+          安装到您的项目中。
+        </p>
+      </>
+    ),
+    step2: (
+      <p>
+        <b className={typographyStyles.note}>步骤2:</b>{" "}
+        准备您的架构以进行验证和注册 输入到React Hook Form.
+      </p>
+    ),
   },
 }

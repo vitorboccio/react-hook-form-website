@@ -50,7 +50,7 @@ function HomePage({
       ? language
       : { currentLanguage: defaultLang }
 
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     updateSubmitData(data)
   }
 
@@ -76,8 +76,8 @@ function HomePage({
     const isolate = document.querySelector("#isolate")
     const card = document.querySelector("#card")
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           if (entry.target === featureList && !isPlayFeature) {
             setFeaturePlay(true)
@@ -91,9 +91,9 @@ function HomePage({
           if (entry.target === isolate && !isIsolatePlay) {
             setIsolatePlay(true)
           }
-          if (entry.target === card && !isCardPlay) {
-            setCardPlay(true)
-          }
+          // if (entry.target === card && !isCardPlay) {
+          //   setCardPlay(true)
+          // }
         }
       })
     }, options)
@@ -102,7 +102,7 @@ function HomePage({
     observer.observe(codeComparison)
     observer.observe(rendering)
     observer.observe(isolate)
-    observer.observe(card)
+    // observer.observe(card)
 
     return () => observer.disconnect()
   }, [])

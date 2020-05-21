@@ -8,6 +8,7 @@ import { updateCurrentLanguage } from "../actions/languageActions"
 import { globalHistory, navigate } from "@reach/router"
 import Toggle from "./Toggle"
 import { Animate } from "react-simple-animate"
+// @ts-ignore
 import styles from "./Nav.module.css"
 
 export default function Nav({ defaultLang }: { defaultLang: string }) {
@@ -55,19 +56,6 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
           </a>
         </span>
 
-        <span className={`${styles.icon} desktopOnly`}>
-          <a
-            href="https://medium.com/@bruce1049/form-validation-with-hook-in-3kb-c5414edf7d64"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="React Form validation under 3K"
-          >
-            <svg viewBox="0 0 512 512" aria-label="Medium logo">
-              <path d="M71.5 142.3c.6-5.9-1.7-11.8-6.1-15.8L20.3 72.1V64h140.2l108.4 237.7L364.2 64h133.7v8.1l-38.6 37c-3.3 2.5-5 6.7-4.3 10.8v272c-.7 4.1 1 8.3 4.3 10.8l37.7 37v8.1H307.3v-8.1l39.1-37.9c3.8-3.8 3.8-5 3.8-10.8V171.2L241.5 447.1h-14.7L100.4 171.2v184.9c-1.1 7.8 1.5 15.6 7 21.2l50.8 61.6v8.1h-144v-8L65 377.3c5.4-5.6 7.9-13.5 6.5-21.2V142.3z" />
-            </svg>
-          </a>
-        </span>
-
         <span className={styles.icon}>
           <a
             href="https://spectrum.chat/react-hook-form"
@@ -106,9 +94,10 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
       >
         <select
           aria-label="Select a language"
-          onChange={e => {
+          onChange={(e) => {
             const selectedLanguage = e.target.value
-            action(selectedLanguage)
+            // @ts-ignore
+            action(e.target.value)
 
             let url = location.pathname.substr(1)
 
@@ -156,6 +145,26 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
               bottom: 43,
             }}
           >
+            <Link
+              activeClassName="active"
+              to={translateLink("/faqs", currentLanguage)}
+            >
+              <div className={styles.iconWrapper}>
+                <div className="eye icon" />
+              </div>
+              <span>{nav[currentLanguage].faqs}</span>
+            </Link>
+
+            <Link
+              activeClassName="active"
+              to={translateLink("/resources", currentLanguage)}
+            >
+              <div className={styles.iconWrapper}>
+                <div className="tag icon" />
+              </div>
+              <span>Resources</span>
+            </Link>
+
             <Link
               activeClassName="active"
               to={translateLink("/dev-tools", currentLanguage)}
@@ -215,22 +224,37 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
 
           <Link
             activeClassName="active"
+            to={translateLink("/ts", currentLanguage)}
+          >
+            <div className={styles.iconWrapper}>
+              <span
+                style={{
+                  border: "1px solid white",
+                  display: "inline-block",
+                  lineHeight: 1.8,
+                  width: 16,
+                  height: 16,
+                  fontSize: 8,
+                  marginTop: 2,
+                  background: "white",
+                  color: "black",
+                  fontWeight: 600,
+                }}
+              >
+                TS
+              </span>
+            </div>
+            <span>TS</span>
+          </Link>
+
+          <Link
+            activeClassName="active"
             to={translateLink("/advanced-usage", currentLanguage)}
           >
             <div className={styles.iconWrapper}>
               <div className="search icon" />
             </div>
             <span>{nav[currentLanguage].advanced}</span>
-          </Link>
-
-          <Link
-            activeClassName="active"
-            to={translateLink("/form-builder", currentLanguage)}
-          >
-            <div className={styles.iconWrapper}>
-              <div className="edit icon" />
-            </div>
-            <span>{nav[currentLanguage].builder}</span>
           </Link>
 
           <Link
@@ -243,8 +267,65 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
             <span>{nav[currentLanguage].faqs}</span>
           </Link>
 
+          <span className="desktopOnly">
+            <span className={styles.tools} tabIndex={0}>
+              <span
+                style={{
+                  position: "relative",
+                  top: 2,
+                }}
+              >
+                <span className={styles.menuExpandLink}>
+                  {nav[currentLanguage].tools.nav}{" "}
+                  <span
+                    style={{
+                      fontSize: 10,
+                      display: "inline",
+                      marginLeft: 2,
+                      top: -1,
+                      position: "relative",
+                    }}
+                  >
+                    ▼
+                  </span>
+                </span>
+              </span>
+            </span>
+            <div
+              style={{
+                position: "absolute",
+                overflow: "hidden",
+                marginLeft: -10,
+                zIndex: 4,
+              }}
+            >
+              <div
+                style={{
+                  overflow: "hidden",
+                }}
+              >
+                <div className={styles.menuExpand}>
+                  <Link
+                    activeClassName="active"
+                    to={translateLink("/dev-tools", currentLanguage)}
+                  >
+                    {nav[currentLanguage].tools.devTools}
+                  </Link>
+
+                  <Link
+                    activeClassName="active"
+                    to={translateLink("/form-builder", currentLanguage)}
+                  >
+                    {nav[currentLanguage].tools.formBuilder}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </span>
+
           <Link
             activeClassName="active"
+            className={styles.mobileNav}
             to={translateLink("/dev-tools", currentLanguage)}
           >
             <div className={styles.iconWrapper}>
@@ -252,6 +333,28 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
             </div>
             <span>DevTools</span>
           </Link>
+
+          <Link
+            activeClassName="active"
+            className={styles.mobileNav}
+            to={translateLink("/form-builder", currentLanguage)}
+          >
+            <div className={styles.iconWrapper}>
+              <div className="edit icon" />
+            </div>
+            <span>{nav[currentLanguage].builder}</span>
+          </Link>
+
+          <Link
+            activeClassName="active"
+            to={translateLink("/resources", currentLanguage)}
+          >
+            <div className={styles.iconWrapper}>
+              <div className="tag icon" />
+            </div>
+            <span>{nav[currentLanguage].resources}</span>
+          </Link>
+
           <a
             href="https://github.com/react-hook-form/react-hook-form/releases"
             target="_blank"
@@ -260,9 +363,10 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
           >
             {nav[currentLanguage].releases}
           </a>
+
           <a
             href="#"
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               setShowMenu(!showMenu)
             }}
@@ -278,7 +382,7 @@ export default function Nav({ defaultLang }: { defaultLang: string }) {
   )
 }
 
-function getNavLink(path: string, selectedLanguage: string) {
+export function getNavLink(path: string, selectedLanguage: string) {
   const i18nPagePathRegex = /^([a-z]{2})(\/\S+|\?.+)/
   const i18nHomePageRegex = /^[a-z]{2}$/
   const i18nPageMatched = path.match(i18nPagePathRegex)

@@ -1,12 +1,9 @@
 import * as React from "react"
 import colors from "../../styles/colors"
-import Popup from "../../components/Popup"
-import generic from "../generic"
 import CodeArea from "../../components/CodeArea"
 import useFieldArrayArgument from "../../components/codeExamples/useFieldArrayArgument"
 import typographyStyles from "../../styles/typography.module.css"
 import buttonStyles from "../../styles/button.module.css"
-import code from "../../components/codeExamples/defaultExample"
 
 export default {
   title: "API ドキュメント",
@@ -16,12 +13,6 @@ export default {
   },
   useForm: {
     title: "useForm",
-    intro: (
-      <>
-        <code>useForm</code>{" "}
-        を呼び出すことにより、次のメソッドを受け取ることができます。{" "}
-      </>
-    ),
     description: (
       <p>
         <code>useForm</code> は<b>省略可能</b>な引数もあります。
@@ -64,7 +55,7 @@ export default {
     validateCriteriaMode: (
       <>
         <p>
-          デフォルトの設定である <code>firstErrorDetected</code>{" "}
+          デフォルトの設定である <code>firstError</code>{" "}
           は、全てのフィールドのバリデーションを行い、最初に発生したエラーを収集します。
         </p>
         <p>
@@ -149,7 +140,7 @@ export default {
         を使用してフォームバリデーションルールを適用します。{" "}
         <button
           className={buttonStyles.codeAsLink}
-          onClick={() => goToSection("ValidationSchema")}
+          onClick={() => goToSection("validationSchema")}
         >
           validationSchema
         </button>{" "}
@@ -160,7 +151,6 @@ export default {
       <p>
         このオプションを使用すると、エラーのある入力が再度バリデーションされるタイミングを設定することができます。{" "}
         (デフォルトでは、入力変更時にバリデーションがトリガーされます。){" "}
-        <Popup />
       </p>
     ),
     validationFields: (
@@ -313,6 +303,18 @@ export default {
             で再レンダリングをトリガーしたい場合は、 登録した input に type
             属性を指定する必要があります。
           </p>
+
+          <p>
+            <code
+              className={typographyStyles.codeBlock}
+            >{`register({ name: 'firstName', type: 'custom' }, { required: true, min: 8 })`}</code>
+          </p>
+
+          <p>
+            <b className={typographyStyles.note}>Nota:</b> multiple radio inputs
+            with the same name, you want to register the validation to the last
+            input so the hook understand validate them as a group at the end.
+          </p>
         </>
       ),
     },
@@ -354,6 +356,8 @@ export default {
           にラップされているので、状態の更新を有効にするには、
           <code>render</code> 前に <code>formState</code>{" "}
           を呼び出すか、読み込む必要があります。
+          この再レンダリング機能の削減機能は、Webプラットフォームにのみ適用されます。
+          React Nativeでの<code>Proxy</code>のサポートについて。
         </p>
       </>
     ),
@@ -363,7 +367,8 @@ export default {
         ユーザーが変更したフィールドの一意の <code>Set</code> オブジェクト。
       </>
     ),
-    isSubmitted: "ユーザーがフォームを送信した後 true に設定します。",
+    isSubmitted:
+      "ユーザーがフォームを送信した後 true に設定します。フォームの送信後、その状態は、resetメソッドで呼び出されるまで送信されたままになります。",
     touched: (
       <>
         操作された全ての input の <code>name</code> の配列。
@@ -386,41 +391,13 @@ export default {
           オブジェクトには、各 input{" "}
           のフォームのエラーまたはエラーメッセージが含まれています。
         </p>
-        <p>
-          <b className={typographyStyles.note}>
-            {generic.note[currentLanguage]}:
-          </b>{" "}
-          V3 と V4 の違い:
-        </p>
-
-        <ul>
-          <li>
-            <p>V4: ネストされたオブジェクト</p>
-            <p>
-              <strong>理由:</strong> Optional chaining{" "}
-              はコミュニティの間でより一般的になり、型のサポートが向上するため。
-            </p>
-            <p>
-              <code>{`errors?.yourDetail?.firstName;`}</code>
-            </p>
-          </li>
-          <li>
-            <p>V3: フラットなオブジェクト</p>
-            <p>
-              <strong>理由:</strong> エラーがシンプルでアクセスしやすいため。
-            </p>
-            <p>
-              <code>{`errors['yourDetail.firstName'];`}</code>
-            </p>
-          </li>
-        </ul>
       </>
     ),
     types: (
       <>
         これは、単一のフィールドで複数のエラーを返す必要がある、
         パスワードのルールのような input のバリデーションに役立ちます。
-        この機能を有効にするには、 <code>validateCriteriaMode: 'all'</code>{" "}
+        この機能を有効にするには、 <code>criteriaMode 'all'</code>{" "}
         を設定してください。
       </>
     ),
@@ -470,7 +447,6 @@ export default {
       ),
       multiple: "複数の input を監視します",
       all: "全ての input を監視します",
-      nest: "すべての入力を監視し、ネストされたオブジェクトを返します",
     },
   },
   handleSubmit: {
@@ -620,33 +596,10 @@ export default {
   },
   getValues: {
     title: "getValues",
-    description: (
-      <>
-        <p>この関数は、フォーム全体のデータを返します。</p>
-
-        <ul>
-          <li>
-            <p>
-              デフォルトでは、<code>getValues()</code>{" "}
-              はフォームデータをフラットな構造で返します。 例：{" "}
-              <code>{`{ test: 'data', test1: 'data1'}`}</code>
-            </p>
-          </li>
-          <li>
-            <p>
-              定義されたフォームフィールドで、
-              <code>getValues({`{ nest: true }`})</code> は input の{" "}
-              <code>name</code>{" "}
-              属性に基づいてネストされた構造でデータを返します。 例：{" "}
-              <code>{`{ test: [1, 2], test1: { data: '23' } }`}</code>
-            </p>
-          </li>
-        </ul>
-      </>
-    ),
+    description: <p>この関数は、フォーム全体のデータを返します。</p>,
   },
-  triggerValidation: {
-    title: "triggerValidation",
+  trigger: {
+    title: "trigger",
     description: (
       <>
         <p>フォームで input/select のバリデーションを手動でトリガーします。</p>
@@ -656,26 +609,6 @@ export default {
           オブジェクトが更新されます。
         </p>
       </>
-    ),
-  },
-  validationSchema: {
-    title: "validationSchema",
-    description: (
-      <p>
-        外部バリデーションスキーマでバリデーションルールを一元管理したい場合は、
-        省略可能な引数として <code>useForm</code> に{" "}
-        <code>validationSchema</code> を適用できます。 React Hook Form
-        は現在、オブジェクトスキーマバリデーションで{" "}
-        <a
-          className={buttonStyles.links}
-          href="https://github.com/jquense/yup"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Yup
-        </a>{" "}
-        をサポートしています。
-      </p>
     ),
   },
   Controller: {
@@ -740,11 +673,6 @@ export default {
             </p>
             <p>
               <b className={typographyStyles.note}>注意:</b>{" "}
-              指定した場合、これは <code>useForm</code> の{" "}
-              <code>defaultValue</code> よりも優先されます。
-            </p>
-            <p>
-              <b className={typographyStyles.note}>注意:</b>{" "}
               フォーム内でデフォルト値を引数として <code>reset</code>{" "}
               を呼び出す場合、 インラインの <code>defaultValue</code>{" "}
               を設定する代わりに、 useForm で <code>defaultValues</code>{" "}
@@ -800,6 +728,33 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
             を使用すると、特定のイベント名をターゲットにすることができます。
             例えば、 <code>onChange</code> イベントが <code>onTextChange</code>{" "}
             と命名されている場合。
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>onFocus</code>
+          </td>
+          <td>
+            <code className={typographyStyles.typeText}>() => void</code>
+          </td>
+          <td></td>
+          <td>
+            <p>
+              This callback allows the custom hook to focus on the input when
+              there is an error. This function is applicable for both React and
+              React-Native components as long as they can be focused.
+            </p>
+            <p>
+              Here is a{" "}
+              <a
+                href="https://codesandbox.io/s/react-hook-form-controller-auto-focus-5tru5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                working example with MUI
+              </a>
+              .
+            </p>
           </td>
         </tr>
         <tr>
@@ -875,12 +830,6 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
           コンポーネントに直接渡すことができます。
           <code>name</code> prop{" "}
           は、主に後でフォームから値にアクセスするために使用されます。
-        </p>
-
-        <p>
-          <code>defaultValue</code> prop を使用する場合、
-          <code>useForm</code> で設定した <code>defaultValues</code>{" "}
-          の値より優先されます。
         </p>
       </>
     ),
@@ -1007,23 +956,6 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
       </tbody>
     ),
   },
-  NativeValidation: {
-    title: "Browser built-in validation",
-    description: (
-      <>
-        <p>
-          下記の例は、ブラウザバリデーションを活用する方法を示しています。
-          <code>nativeValidation</code> を <code>true</code> に設定するだけで、
-          残りの構文は標準のバリデーションと同じになります。
-        </p>
-        <p>
-          <b className={typographyStyles.note}>注意</b>:
-          この機能は使用率が低いため V4 で削除されましたが、 V3{" "}
-          では引き続き使用できます。
-        </p>
-      </>
-    ),
-  },
   useFieldArray: {
     title: "useFieldArray",
     description: (
@@ -1069,8 +1001,9 @@ onChange={{([ { checked } ]) => ({ checked })}}`}
           </li>
           <li>
             <p>
-              デフォルト値を設定するか、入力値をリセットしたい場合は、
-              <code>defaultValue</code> を設定します。
+              必ず<code>defaultValue</code>をに設定してください
+              <code>fields[index]</code>デフォルト値を設定する場合、
+              入力で削除またはリセットします。
             </p>
           </li>
           <li>
@@ -1102,7 +1035,7 @@ React.useEffect(() => {
           </li>
           <li>
             <p>
-              <code>useFormContext</code> を使用する際には、
+              <code>useFieldArray</code> を使用する際には、
               <code>{`ref={register}`}</code> ではなく{" "}
               <code>{`ref={register()}`}</code> を適用して、 <code>map</code>{" "}
               中に <code>register</code> が呼び出されるようにすることが
@@ -1221,12 +1154,20 @@ React.useEffect(() => {
       </>
     ),
   },
-  validationResolver: {
-    title: "validationResolver",
+  resolver: {
+    title: "resolver",
     description: (
       <>
         <p>
           この関数を使用すると、
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
           <a
             href="https://github.com/hapijs/joi"
             target="_blank"
@@ -1248,32 +1189,78 @@ React.useEffect(() => {
           で動作する多くのバリデーションライブラリをサポートしたいと思っています。
           カスタムバリデーションロジックを作成して検証することもできます。
         </p>
+
         <p>
-          <b className={typographyStyles.note}>注意:</b> <code>values</code> と{" "}
-          <code>errors</code>{" "}
-          を含むオブジェクトを返していることを確認してください。
-          デフォルト値は空のオブジェクト <code>{`{}`}</code>{" "}
-          である必要があります。
+          Yup、Joi、Superstructを正式にサポートしています{" "}
+          <a
+            href="https://github.com/react-hook-form/react-hook-form-resolvers"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            標準リゾルバー
+          </a>
+          。
         </p>
-        <p>
-          <b className={typographyStyles.note}>注意:</b> 返す{" "}
-          <code>errors</code> オブジェクトのキーは、フォーム内の input（
-          <code>name</code>属性）に関連させる必要があります。
-        </p>
-        <p>
-          <b className={typographyStyles.note}>注意:</b> この関数は{" "}
-          <code>validationSchema</code>{" "}
-          と同様にカスタムフック内にキャッシュされますが、{" "}
-          <code>validationContext</code>{" "}
-          は再レンダリングのたびに変更できるミュータブルなオブジェクトです。
-        </p>
-        <p>
-          <b className={typographyStyles.note}>注意:</b>{" "}
-          ライブラリ自体が特定のフィールドに対してエラーオブジェクトを評価し、
-          それに応じて再レンダリングをトリガーするため、ユーザーの入力中、一度に一つのフィールドでのみ{" "}
-          input の再検証が発生します。
-        </p>
+
+        <code
+          style={{
+            fontSize: 16,
+            padding: 15,
+            background: "#191d3a",
+            borderRadius: 4,
+            display: "block",
+          }}
+        >
+          npm install @hookform/resolvers
+        </code>
+
+        <p>カスタムリゾルバの構築に関する注意：</p>
+
+        <ul>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>注意:</b> <code>values</code>{" "}
+              と <code>errors</code>{" "}
+              を含むオブジェクトを返していることを確認してください。
+              デフォルト値は空のオブジェクト <code>{`{}`}</code>{" "}
+              である必要があります。
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>注意:</b> 返す{" "}
+              <code>errors</code> オブジェクトのキーは、フォーム内の input（
+              <code>name</code>属性）に関連させる必要があります。
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>注意:</b>この関数は
+              カスタムフック内にキャッシュされますが、
+              <code>context</code>は
+              再レンダリングのたびに変更できる可変オブジェクト。
+            </p>
+          </li>
+          <li>
+            <p>
+              <b className={typographyStyles.note}>注意:</b>{" "}
+              ライブラリ自体が特定のフィールドに対してエラーオブジェクトを評価し、
+              それに応じて再レンダリングをトリガーするため、ユーザーの入力中、一度に一つのフィールドでのみ{" "}
+              input の再検証が発生します。
+            </p>
+          </li>
+        </ul>
       </>
+    ),
+  },
+  useWatch: {
+    title: "useWatch",
+    description: (
+      <p>
+        <code>watch</code> APIと同じ機能を共有しますが、これは
+        コンポーネントレベルで再レンダリングを分離し、結果的に
+        アプリケーションのパフォーマンスが向上します。
+      </p>
     ),
   },
 }

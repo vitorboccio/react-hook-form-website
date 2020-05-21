@@ -41,10 +41,11 @@ export default function Controller({
       <TabGroup buttonLabels={["Web", "React Native"]}>
         <CodeArea
           rawData={controller}
-          url="https://codesandbox.io/s/react-hook-form-controller-079xx"
+          url="https://codesandbox.io/s/react-hook-form-v6-controller-qsd8r"
         />
         <CodeArea
           rawData={reactNativeController}
+          isExpo
           url="https://snack.expo.io/@bluebill1049/react-hook-form---controller"
         />
       </TabGroup>

@@ -1,6 +1,5 @@
 import * as React from "react"
 import colors from "../../styles/colors"
-import Popup from "../../components/Popup"
 import CodeArea from "../../components/CodeArea"
 import useFieldArrayArgument from "../../components/codeExamples/useFieldArrayArgument"
 import typographyStyles from "../../styles/typography.module.css"
@@ -14,11 +13,6 @@ export default {
   },
   useForm: {
     title: "useForm",
-    intro: (
-      <>
-        Вызывая <code>useForm</code>, вы получите следующие методы{" "}
-      </>
-    ),
     description: (
       <p>
         <code>useForm</code> также имеет <b>необязательные</b> аргументы. В
@@ -45,8 +39,8 @@ export default {
     validateContext: (
       <>
         <p>
-          This context object will be injected into{" "}
-          <code>validationResolver</code>'s second argument or{" "}
+          This context object will be injected into <code>resolver</code>'s
+          second argument or{" "}
           <a
             href="https://github.com/jquense/yup"
             target="_blank"
@@ -61,8 +55,8 @@ export default {
     validateCriteriaMode: (
       <>
         <p>
-          <code>firstErrorDetected</code> - значение по умолчанию, будут
-          проверены все валидируемые поля и собраны все первоначальные ошибки.
+          <code>firstError</code> - значение по умолчанию, будут проверены все
+          валидируемые поля и собраны все первоначальные ошибки.
         </p>
         <p>
           Если для данного параметра установлено значение <code>all</code>, то
@@ -145,7 +139,7 @@ export default {
         перейдите в раздел{" "}
         <button
           className={buttonStyles.codeAsLink}
-          onClick={() => goToSection("ValidationSchema")}
+          onClick={() => goToSection("validationSchema")}
         >
           validationSchema
         </button>{" "}
@@ -156,7 +150,7 @@ export default {
       <p>
         Этот параметр позволяет установить, когда поля с ошибками будут повторно
         валидироваться (по умолчанию проверка запускается при любом изменении в
-        поле). <Popup />
+        поле).
       </p>
     ),
     validationFields: (
@@ -314,6 +308,18 @@ export default {
             обновления его значения, то вам нужно указать тип
             зарегистрированного поля.
           </p>
+
+          <p>
+            <code
+              className={typographyStyles.codeBlock}
+            >{`register({ name: 'firstName', type: 'custom' }, { required: true, min: 8 })`}</code>
+          </p>
+
+          <p>
+            <b className={typographyStyles.note}>Nota:</b>несколько radio input
+            с тем же именем, вы хотите зарегистрировать валидацию до последнего
+            ввод, чтобы ловушка понимала, валидируйте их как группу в конце.
+          </p>
         </>
       ),
     },
@@ -350,13 +356,17 @@ export default {
             Proxy
           </a>{" "}
           to improve render performance, so make you have invoke/read it before
-          <code>render</code> in order to enable the state update.
+          <code>render</code> in order to enable the state update. Этот Функция
+          уменьшения количества повторного рендеринга применима только к
+          веб-платформе из-за отсутствия поддержки <code>Proxy</code> в React
+          Native.
         </p>
       </>
     ),
     dirty: "Устанавливается в true после изменения любого поля.",
     dirtyFields: "Уникальный набор пользовательских полей.",
-    isSubmitted: "Устанавливается в true после отправки формы.",
+    isSubmitted:
+      "Устанавливается в true после отправки формы. После отправки формы ее состояние будет оставаться до тех пор, пока не будет вызван метод сброса.",
     touched:
       "Объект, содержаций все поля, с которыми взаимодействовал пользователь.",
     isSubmitting: (
@@ -376,33 +386,6 @@ export default {
           Объект, содержащий ошибки формы или сообщения об ошибках для каждого
           поля.
         </p>
-
-        <p>
-          <b className={typographyStyles.note}>Примечание:</b> Есть развница в
-          V3 и V4:
-        </p>
-
-        <ul>
-          <li>
-            <p>V4: Вложеный объект</p>
-            <p>
-              <strong>Причина:</strong> так как опциональный чейнинг становится
-              всё более популярным в сообществе и для поддержки лучшего типа.
-            </p>
-            <p>
-              <code>{`errors?.yourDetail?.firstName;`}</code>
-            </p>
-          </li>
-          <li>
-            <p>V3: Плоский объект</p>
-            <p>
-              <strong>Причина:</strong> простой доступ к ошибке.
-            </p>
-            <p>
-              <code>{`errors['yourDetail.firstName'];`}</code>
-            </p>
-          </li>
-        </ul>
       </>
     ),
     types: (
@@ -410,7 +393,7 @@ export default {
         Это полезно для проверки входных данных, таких как правила пароля,
         которые должны возвращать несколько ошибок для одного поля. Чтобы
         включить эту функцию, убедитесь, что вы установили{" "}
-        <code>validateCriteriaMode: 'all'</code>.
+        <code>criteriaMode 'all'</code>.
       </>
     ),
     message: `Сообщение является пустой строкой по умолчанию. Однако, если вы зарегистрируете валидацию с сообщением об ошибке, то затем она будет возвращена.`,
@@ -460,7 +443,6 @@ export default {
       ),
       multiple: "Наблюдение за несколькими полями",
       all: "Наблюдение за всеми полями",
-      nest: "Наблюдение за всеми полями и возврат вложенного объекта",
     },
   },
   handleSubmit: {
@@ -619,29 +601,11 @@ export default {
           Эта функция возвращает все данные формы, и это полезно, когда вы
           хотите получить значения полей формы.
         </p>
-
-        <ul>
-          <li>
-            <p>
-              По умолчанию <code>getValues()</code> вернёт значения полей формы
-              в виде плоской структуры, например:{" "}
-              <code>{`{ test: 'data', test1: 'data1'}`}</code>
-            </p>
-          </li>
-          <li>
-            <p>
-              При работе с определёнными полями формы,{" "}
-              <code>getValues({`{ nest: true }`})</code> вернёт данные во
-              вложенной структуре согласно <code>имени</code> поля, например:{" "}
-              <code>{`{ test: [1, 2], test1: { data: '23' } }`}</code>
-            </p>
-          </li>
-        </ul>
       </>
     ),
   },
-  triggerValidation: {
-    title: "triggerValidation",
+  trigger: {
+    title: "trigger",
     description: (
       <>
         <p>Для принудительного вызова валидации input/select полей формы.</p>
@@ -653,7 +617,7 @@ export default {
     ),
   },
   validationSchema: {
-    title: "ValidationSchema",
+    title: "validationSchema",
     description: (
       <p>
         Если вы хотите централизовать свои правила валидации с помощью внешней
@@ -752,8 +716,8 @@ React.useEffect(() => {
             It's <strong>important</strong> to apply{" "}
             <code>{`ref={register()}`}</code> instead of{" "}
             <code>{`ref={register}`}</code> when working with{" "}
-            <code>useFormContext</code> so <code>register</code> will get
-            invoked during <code>map</code>.
+            <code>useFieldArray</code> so <code>register</code> will get invoked
+            during <code>map</code>.
           </li>
           <li>
             <p>
@@ -940,11 +904,6 @@ React.useEffect(() => {
               <code>defaultValues</code> для <code>useForm</code>
             </p>
             <p>
-              <b className={typographyStyles.note}>Примечание</b>: Если указано,
-              то будет иметь приоритет над <code>defaultValues</code> у{" "}
-              <code>useForm</code> для данного поля.
-            </p>
-            <p>
               <b className={typographyStyles.note}>Note</b>: if your form will
               invoke <code>reset</code> with different values, you will need to
               provide <code>defaultValues</code> at useForm level instead of set
@@ -981,11 +940,6 @@ React.useEffect(() => {
             или <code>checked</code> будет считываться, когда форма полезных
             данных представляет собой <code>object</code>, который содержит
             атрибут type.
-            <CodeArea
-              withOutCopy
-              rawData={`onChange={{([ event ]) => event.target.value}}
-onChange={{([ event, data ]) => ({ checked: data.checked})}}`}
-            />
           </td>
         </tr>
         <tr>
@@ -1000,6 +954,33 @@ onChange={{([ event, data ]) => ({ checked: data.checked})}}`}
             Этот параметр позволяет вам настроить таргетинг на конкретное имя
             события, например: когда событие <code>onChange</code> называется{" "}
             <code>onTextChange</code>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>onFocus</code>
+          </td>
+          <td>
+            <code className={typographyStyles.typeText}>() => void</code>
+          </td>
+          <td></td>
+          <td>
+            <p>
+              Этот обратный вызов позволяет пользовательскому хуку
+              сосредоточиться на вводе, когда есть ошибка. Эта функция применима
+              как для React, так и для Реагируйте-нативные компоненты, пока они
+              могут быть сфокусированы.
+            </p>
+            <p>
+              <a
+                href="https://codesandbox.io/s/react-hook-form-controller-auto-focus-5tru5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Вот рабочий пример.
+              </a>
+              .
+            </p>
           </td>
         </tr>
         <tr>
@@ -1072,13 +1053,6 @@ onChange={{([ event, data ]) => ({ checked: data.checked})}}`}
           можете передать это свойство в Controller напрямую. Свойство{" "}
           <code>name</code> будет использовано позже для доступа к значению
           этого свойства внутри формы.
-        </p>
-
-        <p>
-          Если вы используете свойство <code>defaultValue</code>, то оно будет
-          иметь приоритет перед значением одноимённого свойства{" "}
-          <code>useForm</code>
-          для поля с одним и тем же <code>name</code>.
         </p>
       </>
     ),
@@ -1204,30 +1178,21 @@ onChange={{([ event, data ]) => ({ checked: data.checked})}}`}
       </tbody>
     ),
   },
-  NativeValidation: {
-    title: "Browser built-in validation",
-    description: (
-      <>
-        <p>
-          В следующем примере показано, как вы можете использовать браузерную
-          валидацию. Вам нужно установить свойство <code>nativeValidation</code>{" "}
-          в <code>true</code>, а остальная часть синтаксиса такая же, как для
-          стандартной валидации.
-        </p>
-        <p>
-          <b className={typographyStyles.note}>Note</b>: This feature has been
-          removed in V4 due to low usage, but you can still use it in V3
-        </p>
-      </>
-    ),
-  },
-  validationResolver: {
-    title: "validationResolver",
+  resolver: {
+    title: "resolver",
     description: (
       <>
         <p>
           This function allow you to run any external validation methods, such
           as{" "}
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
           <a
             href="https://github.com/hapijs/joi"
             target="_blank"
@@ -1250,31 +1215,73 @@ onChange={{([ event, data ]) => ({ checked: data.checked})}}`}
         </p>
 
         <p>
-          <b className={typographyStyles.note}>Note:</b> make sure you are
-          returning object which contains <code>values</code> and{" "}
-          <code>errors</code>, and their default value should be empty object{" "}
-          <code>{`{}`}</code>.
+          Мы официально поддерживаем Yup, Joi и Superstruct как
+          <a
+            href="https://github.com/react-hook-form/react-hook-form-resolvers"
+            target="blank"
+            rel="noopener noreferrer"
+          >
+            стандартные резольверы
+          </a>
+          .
         </p>
 
-        <p>
-          <b className={typographyStyles.note}>Note:</b> returning errors
-          object's key should be relevant to your inputs.
-        </p>
+        <code
+          style={{
+            fontSize: 16,
+            padding: 15,
+            background: "#191d3a",
+            borderRadius: 4,
+            display: "block",
+          }}
+        >
+          npm install @hookform/resolvers
+        </code>
 
-        <p>
-          <b className={typographyStyles.note}>Note:</b> this function will be
-          cached inside the custom hook similar as <code>validationSchema</code>
-          , while <code>validationContext</code> is a mutable object which can
-          be changed on each re-render.
-        </p>
+        <p>примечания по созданию пользовательских распознавателей:</p>
 
-        <p>
-          <b className={typographyStyles.note}>Note:</b> re-validate input will
-          only occur one field at time during user’s interaction, because the
-          lib itself will evaluate the error object to the specific field and
-          trigger re-render accordingly.
-        </p>
+        <ul>
+          <li>
+            <p>
+              make sure you are returning object which contains{" "}
+              <code>values</code> and <code>errors</code>, and their default
+              value should be <code>{`{}`}</code>.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              returning errors object's key should be relevant to your inputs.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              this function will be cached inside the custom hook, while{" "}
+              <code>context</code> is a mutable object which can be changed on
+              each re-render.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              re-validate input will only occur one field at time during user’s
+              interaction, because the lib itself will evaluate the error object
+              to the specific field and trigger re-render accordingly.
+            </p>
+          </li>
+        </ul>
       </>
+    ),
+  },
+  useWatch: {
+    title: "useWatch",
+    description: (
+      <p>
+        Используйте те же функции, что и API <code> watch </code>, однако это
+        будет изолировать повторный рендеринг на уровне вашего компонента и
+        потенциально приведет к лучшая производительность для вашего приложения.
+      </p>
     ),
   },
 }

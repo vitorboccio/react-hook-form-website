@@ -67,7 +67,7 @@ export default {
   },
   applyValidation: {
     title: "バリデーションを適用する",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>
           React Hook Form は既存の
@@ -148,7 +148,7 @@ export default {
   },
   workWithUI: {
     title: "UI ライブラリを使用する",
-    description: currentLanguage => (
+    description: (currentLanguage) => (
       <>
         <p>
           React Hook Form は、外部 UI
@@ -233,6 +233,59 @@ export default {
         React Hook Form は <code>Typescript</code>{" "}
         を使用して構築されているため、フォームの値をサポートするための{" "}
         <code>FormData</code> 型を定義することができます。
+      </p>
+    ),
+  },
+  schema: {
+    title: "スキーマバリデーション",
+    description: (
+      <>
+        <p>
+          React Hook Form は、{" "}
+          <a
+            href="https://github.com/jquense/yup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yup
+          </a>
+          ,{" "}
+          <a
+            href="https://github.com/ianstormtaylor/superstruct"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Superstruct
+          </a>{" "}
+          &{" "}
+          <a
+            href="https://github.com/hapijs/joi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Joi
+          </a>{" "}
+          を活用してスキーマベースのフォームバリデーションをサポートしています。
+          省略可能な引数として <code>validationSchema</code> を{" "}
+          <a href="/api#useForm">useForm</a> に渡すことができます。 React Hook
+          Form は、入力されたデータをスキーマに対してバリデーションを行い、{" "}
+          <a href="/api#errors">errors</a> や妥当な結果を返します。
+        </p>
+      </>
+    ),
+    step1: (
+      <>
+        <p>
+          <b className={typographyStyles.note}>ステップ1：</b> <code>Yup</code>{" "}
+          をプロジェクトにインストールします。
+        </p>
+      </>
+    ),
+    step2: (
+      <p>
+        <b className={typographyStyles.note}>ステップ2：</b>{" "}
+        バリデーション用のスキーマを作成し、 React Hook Form を使用して input
+        を登録します。
       </p>
     ),
   },

@@ -1,11 +1,12 @@
 import CodeArea from "./CodeArea"
 import code from "./codeExamples/defaultExample"
+import codeTs from "./codeExamples/defaultExampleTs"
 import * as React from "react"
 import generic from "../data/generic"
 import copyClipBoard from "./utils/copyClipBoard"
+import { useStateMachine } from "little-state-machine"
 import styles from "./GetStarted.module.css"
 import codeAreaStyles from "./CodeArea.module.css"
-import { useStateMachine } from "little-state-machine"
 
 export default function GetStarted({
   quickStartRef,
@@ -52,7 +53,11 @@ export default function GetStarted({
         {getStarted.example.title}
       </h2>
       <p>{getStarted.example.description}</p>
-      <CodeArea rawData={code} url="https://codesandbox.io/s/kw7z2q2n15" />
+      <CodeArea
+        rawData={code}
+        tsRawData={codeTs}
+        url="https://codesandbox.io/s/kw7z2q2n15"
+      />
     </>
   )
 }

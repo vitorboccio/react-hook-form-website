@@ -296,37 +296,6 @@ export default {
       </>
     ),
   },
-  schema: {
-    title: "Валидация по схеме",
-    description: (
-      <>
-        <p>
-          React Hook Form поддерживает валидацию формы по схеме с{" "}
-          <a href="https://github.com/jquense/yup" target="_blank">
-            Yup
-          </a>
-          , где вы можете передать <code>validationSchema</code> в{" "}
-          <a href="/api#useForm">useForm</a> как опциональную настройку. React
-          Hook Form будет валидировать ваши поля ввода по схеме и возвращать
-          либо <a href="/api#errors">ошибки</a>, либо валидный результат.
-        </p>
-      </>
-    ),
-    step1: (
-      <>
-        <p>
-          <b className={typographyStyles.note}>Шаг 1:</b> Установите{" "}
-          <code>Yup</code> в проект.
-        </p>
-      </>
-    ),
-    step2: (
-      <p>
-        <b className={typographyStyles.note}>Шаг 2:</b> Настройте схему данных
-        для валидации и зарегистрируйте поля ввода в React Hook Form.
-      </p>
-    ),
-  },
   connectForm: {
     title: "Connect Form",
     description: (
@@ -465,7 +434,7 @@ export default {
 
         <CodeArea
           rawData={virtualizedList}
-          url="https://codesandbox.io/s/virtulized-react-hook-form-issue-o75u2"
+          url="https://codesandbox.io/s/react-hook-form-with-react-window-b4j8n"
         />
       </>
     ),

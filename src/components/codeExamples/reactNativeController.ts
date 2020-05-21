@@ -16,7 +16,7 @@ export default function App() {
         as={TextInput}
         control={control}
         name="firstName"
-        onChange={args => args[0].nativeEvent.text}
+        onChange={e => e.nativeEvent.text}
         rules={{ required: true }}
         defaultValue=""
       />
@@ -27,10 +27,9 @@ export default function App() {
         as={TextInput}
         control={control}
         name="lastName"
-        onChange={args => args[0].nativeEvent.text}
+        onChange={e => e.nativeEvent.text}
         defaultValue=""
       />
-
 
       <Button title="Submit" onPress={handleSubmit(onSubmit)} />
     </View>
