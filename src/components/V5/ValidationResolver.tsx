@@ -7,7 +7,7 @@ import validationSchema from "./codeExamples/validationSchema"
 import validationSchemaTs from "../codeExamples/validationSchemaTs"
 import typographyStyles from "../../styles/typography.module.css"
 
-export default function ({ api }) {
+export default function({ api }) {
   return (
     <>
       <h5 className={typographyStyles.h5} style={{ marginTop: 20 }}>
