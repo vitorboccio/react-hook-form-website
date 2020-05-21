@@ -59,7 +59,7 @@ export default {
       description: (
         <>
           <p>
-            Não, não nesta abordagem. mas você pode empacotar os componentes e
+            Não, não nesta abordagem. Mas você pode empacotar os componentes e
             usar como componente de classe.
           </p>
 
@@ -200,15 +200,15 @@ export default {
       description: (
         <>
           <p>
-            Antes de tudo, todas as bibliotecas tentam resolver o mesmo problema
-            o que está tornando a experiência de criação de formulários fácil e
-            ótima. No entanto, existem algumas diferenças fundamentais entre os
-            três, react-hook é construído com a inputs não controlados em mente
-            e tenta fornecer ao seu formulário o melhor desempenho e a menor
-            renderização possível. Além disso, o formulário react-hook-form foi
-            construido pelo React Hook e usado como hook, o que significa que
-            não há nenhum componente para você importar. Aqui estão algumas das
-            diferenças de detalhes:
+            Antes de tudo, todas as bibliotecas tentam resolver o mesmo
+            problema, o que está tornando a experiência de criação de
+            formulários fácil e ótima. No entanto, existem algumas diferenças
+            fundamentais entre os três, react-hook é construído com a inputs não
+            controlados em mente e tenta fornecer ao seu formulário o melhor
+            desempenho e a menor renderização possível. Além disso, o formulário
+            react-hook-form foi construido pelo React Hook e usado como hook, o
+            que significa que não há nenhum componente para você importar. Aqui
+            estão algumas das diferenças de detalhes:
           </p>
 
           <div className={tableStyles.tableWrapper}>
